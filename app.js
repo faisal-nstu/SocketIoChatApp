@@ -1,0 +1,38 @@
+const express = require('express');
+const app = express();
+
+// template engine
+app.set('view engine', 'ejs');
+
+// middleware
+app.use(express.static('public'));
+
+// routes
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+// port specify
+server = app.listen(3000);
+
+// initialize socket
+const io = require('socket.io')(server)
+
+// listen on every connection
+io.on('connection', (socket) => {
+    console.log('new user connected');
+
+    // default username
+    socket.username = 'ANONYMOUS';
+
+    // listen on change_username
+    socket.on('change_username', (data) => {
+        socket.username = data.username;
+    });
+
+    // listen on new_message
+    socket.on('new_message', (data) => {
+        // broadcast the new message
+        io.sockets.emit('new_message', { message: data.message, username: socket.username });
+    })
+});
