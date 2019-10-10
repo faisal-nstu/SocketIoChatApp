@@ -16,10 +16,10 @@ app.get('/', (req, res) => {
 server = app.listen(3000);
 
 // initialize socket
-const io = require('socket.io')(server)
+const socketIo = require('socket.io')(server)
 
 // listen on every connection
-io.on('connection', (socket) => {
+socketIo.on('connection', (socket) => {
     console.log('new user connected');
 
     // default username
@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
     // listen on new_message
     socket.on('new_message', (data) => {
         // broadcast the new message
-        io.sockets.emit('new_message', { message: data.message, username: socket.username });
+        socketIo.sockets.emit('new_message', { message: data.message, username: socket.username });
     })
 
      //listen on typing
